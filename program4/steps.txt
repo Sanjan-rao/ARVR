@@ -1,3 +1,6 @@
 1. Create a terrain in hierarchy window
-2. Add grass asset and paint the terrain with it
-3. Create a capsule object and keep camera (right click on capsule and select camera) as child to it with same position and attach script to this object.
+2. Add grass asset (from asset store or download an image from google by searching grass tileable textire and addd that image to the asset section)
+3. Click on the terrain and go to inspector window-> select the option to paint the terrain and choose raise or lower terrain from the dropdown which appears below. Then choose the appropriate brush sie and  paint the terrain with it.
+4. Select Paint texture from the dropdown-> edit terrain layers-> create layer-> select the grass asset you just added to the assets section.
+5. Create a capsule object in hierarchy window (right click->3d object-> capsule) and place camera (right click on capsule and select camera) as child to it with same position and attach script to this object.
+6. Add character controller component to capsule object in inspector window.
