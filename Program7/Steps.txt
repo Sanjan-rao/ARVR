@@ -1,92 +1,92 @@
- Step 1: Set Up Vuforia in Unity
-1️⃣ Open Unity and ensure Vuforia Engine is installed.
+Here’s a *complete guide* to control *motion effects and audio speed using Unity’s Timeline and Time.timeScale, with a **script to adjust audio speed dynamically*.
 
-If not, install it via Window → Package Manager → Vuforia Engine.
-2️⃣ Go to Build Settings (File → Build Settings) → Select Android or iOS and click Switch Platform.
-🔹 Step 2: Import and Set Up Your Vuforia Database
-1️⃣ Download your Image Target database from Vuforia Target Manager.
-2️⃣ Import it into Unity (Assets → Import Package → Custom Package).
-3️⃣ Enable the database:
+---
 
-Go to Window → Vuforia Configuration
-Under Databases, select your database and check Load on Startup.
-🔹 Step 3: Add an Image Target
-1️⃣ Right-click in the Hierarchy → Vuforia Engine → Image Target.
-2️⃣ In the Inspector, set:
+## *Step 1: Set Up the Scene*
+1. *Create a 3D project* in Unity.  
+2. Add a *Canvas* (GameObject → UI → Canvas) and set its *Render Mode* to *Screen Space - Overlay*.  
+3. Add a *Raw Image* inside the *Canvas* (Right-click Canvas → UI → Raw Image).  
+4. Add an *Audio Source* to the scene:  
+   - *Right-click in Hierarchy* → Create Empty → Rename it *"AudioManager"*.  
+   - *Add an Audio Source* component.  
+   - Drag and drop an *audio file* into the *Audio Source*.
 
-Database → Select your imported Vuforia database.
-Image Target → Choose your target image from the database.
-🔹 Step 4: Add the 3D Truck Model
-1️⃣ Import or create a 3D truck model (.fbx, .obj).
-2️⃣ Drag the truck model inside the Image Target in the Hierarchy.
-3️⃣ Scale & position the truck so it appears correctly when tracking starts.
-4️⃣ Disable the truck initially:
+---
 
-Click on the truck model → In Inspector, uncheck "Active" (or SetActive(false) in script).
-🔹 Step 5: Add Audio Source
-1️⃣ Select the Truck Model.
-2️⃣ In the Inspector, click Add Component → Audio Source.
-3️⃣ Drag and drop a truck sound effect (.mp3 or .wav) into the Audio Clip field.
-4️⃣ Uncheck Play on Awake (so it doesn’t play automatically).
+## *Step 2: Set Up the Timeline*
+1. Open *Window → Sequencing → Timeline*.  
+2. Right-click in the Hierarchy and create an *Empty GameObject, name it **"TimelineController"*.  
+3. Select *"TimelineController", then click **Create* in the Timeline window to create a new Timeline asset.  
+   - Save it as *"MotionTimeline"* in the *Assets folder*.  
+4. Click *"Add"* in the Timeline window and add:  
+   - *Animation Track* (for the Raw Image movement).  
+   - *Audio Track* (for the audio file).  
 
-🔹 Step 6: Create the Script (PlayAudioOnDetect.cs)
-1️⃣ Right-click in Assets → Create → C# Script.
-2️⃣ Rename it to PlayAudioOnDetect.
-3️⃣ Open the script and paste this fixed version:
+---
 
+## *Step 3: Animate the Raw Image*
+1. Select the *Raw Image, then in the **Timeline window, click **Add Keyframe* (●) on the Animation Track.  
+2. Move the timeline cursor forward (e.g., at 5 seconds) and change the *position* and *scale* of the image in the *Inspector*.  
+3. Unity will automatically generate *smooth interpolation* between keyframes.  
+
+---
+
+## *Step 4: Add and Sync Audio*
+1. Drag and drop your *audio file* into the *Audio Track* in Timeline.  
+2. Adjust the *clip duration* to match the animation.  
+
+---
+
+## *Step 5: Control Time Scale in Timeline*
+1. Open *Window → Animation → Curves* in the Timeline.  
+2. Right-click on the Timeline and choose *Add Override Track → Time Scale Track*.  
+3. Add keyframes to *change Time.timeScale dynamically*:  
+   - *At 0s, set Time Scale to **1.0* (normal speed).  
+   - *At 2s, set Time Scale to **0.5* (slow motion).  
+   - *At 4s, set Time Scale back to **1.0* (normal speed).  
+4. Unity will automatically *adjust animation speed, but **audio pitch needs to be adjusted manually using a script*.
+
+---
+
+## *Step 6: Add a Script to Adjust Audio Pitch*
+### *1. Create the Script*
+1. Create a *new C# script, name it **"AudioTimeScaleController.cs"*.
+2. Attach it to the *AudioManager* GameObject.
+
+### *2. Add the Following Code:*
 csharp
-Copy
-Edit
 using UnityEngine;
-using Vuforia;
 
-public class PlayAudioOnDetect : MonoBehaviour
+public class AudioTimeScaleController : MonoBehaviour
 {
-    public GameObject truckModel;  // Assign the 3D truck
-    public AudioSource audioSource;  // Assign the audio source
+    public AudioSource audioSource;
 
-    private ObserverBehaviour observerBehaviour;
-
-    void Start()
+    void Update()
     {
-        // Get ObserverBehaviour from Image Target
-        observerBehaviour = GetComponent<ObserverBehaviour>();
-
-        if (observerBehaviour)
+        // Adjust audio pitch based on Time.timeScale
+        if (audioSource != null)
         {
-            // Register event for marker detection
-            observerBehaviour.OnTargetStatusChanged += OnTargetStatusChanged;
-        }
-
-        // Initially hide the truck
-        truckModel.SetActive(false);
-    }
-
-    private void OnTargetStatusChanged(ObserverBehaviour behaviour, TargetStatus targetStatus)
-    {
-        if (targetStatus.Status == Status.TRACKED)  
-        {
-            // Show truck and play audio when marker is detected
-            truckModel.SetActive(true);
-            if (!audioSource.isPlaying)
-                audioSource.Play();
-        }
-        else if (targetStatus.Status == Status.NO_POSE)  
-        {
-            // Hide truck and stop audio when marker is lost
-            truckModel.SetActive(false);
-            audioSource.Stop();
+            audioSource.pitch = Time.timeScale;  
         }
     }
 }
-🔹 Step 7: Attach and Configure in Unity
-1️⃣ Select Image Target in the Hierarchy.
-2️⃣ Click Add Component → Attach PlayAudioOnDetect.cs.
-3️⃣ Drag and drop:
 
-The Truck Model into the truckModel field in the script.
-The Audio Source (from the truck) into the audioSource field.
-🔹 Step 8: Test in Unity
-1️⃣ Click Play.
-2️⃣ Show the marker to your webcam → The truck appears & sound plays.
-3️⃣ Remove the marker → The truck disappears & sound stops.
+### *3. Assign the Audio Source*
+- In Unity, select *AudioManager* in the Hierarchy.
+- Drag and drop the *Audio Source* component into the *audioSource* field in *AudioTimeScaleController*.
+
+---
+
+## *Step 7: Play and Test*
+1. Click *Play* in Unity.  
+2. Observe how the *motion of the image slows down and speeds up* dynamically.  
+3. The *audio pitch also changes* automatically to match the *Time.timeScale*.
+
+---
+
+### *Final Output*
+✅ *Image moves and scales smoothly* using *Timeline keyframes*.  
+✅ *Time.timeScale changes dynamically* using *Timeline Override Track*.  
+✅ *Audio pitch adjusts* in real-time using *AudioTimeScaleController.cs*.  
+
+This ensures the *audio syncs perfectly with the animation speed*. Let me know if you need any modifications!
