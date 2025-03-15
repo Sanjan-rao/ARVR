@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ChangeAppearance : MonoBehaviour
+public class program2 : MonoBehaviour
 {
     public GameObject cube, sphere, plane;  // Assign objects in the Inspector
     public Material newCubeMaterial, newSphereMaterial, newPlaneMaterial;  // New materials
