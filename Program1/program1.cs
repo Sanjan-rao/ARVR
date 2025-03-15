@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class TransformObjects : MonoBehaviour
+public class program1 : MonoBehaviour
 {
     public GameObject cube, sphere, plane;
     
