@@ -1,0 +1,7 @@
+step 1: Import asset of 3rd person controller, then add a capsule collider to it and enable isTrigger parameter.
+step 2: Create a cube and add the CubeCollect.cs script to it, now enable the isTrigger parameter inside BoxCollider.
+step 3: Drag and drop the MainCamera inside the third person controller prefab.
+step 4: Duplicate the cubes and place at different positions
+step 5: add a plane, add 2 legacy text components namely scoreText and timerText.
+step 6: add a new empty game object named GameManager. Attach the GameScript.cs script to this GameManager game object.
+step 7: Now drag and drop the scoreText and timerText into their respective slots.
